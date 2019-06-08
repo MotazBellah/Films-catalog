@@ -1,7 +1,7 @@
 import os
 import time
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, current_user, logout_user
 from flask import session as login_session
 from search_movie import search_movie
@@ -290,66 +290,46 @@ def editItem(catalog_name, item_name):
                                item=editedItem)
 
 
-@app.route('/catalogs/<catalog_name>/<item_name>/delete',
-           methods=['GET', 'POST'])
-def deleteItem(catalog_name, item_name):
-    # catalogs = session.query(Catalog).all()
-    catalogs = Catalog.query.all()
-    if not current_user.is_authenticated:
-        flash("You are not loggged in!" )
-        return render_template('notAuthorized.html', catalogs=catalogs)
+@app.route('/delete', methods=['POST'])
+def editTask():
+    item_name = request.args.get('name')
     item = (Item.query.filter_by(user_id=login_session['user_id'])
-                               .filter_by(name=item_name)
-                               .first()
-                               )
-    if login_session['user_id'] != item.user_id:
-        flash('''You are not authorized to update the movies list,
-              Please login first!''' )
-        return render_template('notAuthorized.html', catalogs=catalogs)
-
-    if request.method == 'POST':
+            .filter_by(name=item_name)
+            .first()
+            )
+    if current_user.is_authenticated:
         d.session.delete(item)
         d.session.commit()
-        db.session.remove()
-        flash("Movie has been deleted!")
-        return redirect(url_for('showItem', catalog_name=catalog_name))
-    else:
-        return render_template('deleteItem.html',
-                               item_name=item_name, catalog_name=catalog_name,
-                               item=item)
+        return jsonify({'result': 'success'})
+
+
+# @app.route('/catalogs/<catalog_name>/<item_name>/delete',
+#            methods=['GET', 'POST'])
+# def deleteItem(catalog_name, item_name):
+#     # catalogs = session.query(Catalog).all()
+#     catalogs = Catalog.query.all()
+#     if not current_user.is_authenticated:
+#         flash("You are not loggged in!" )
+#         return render_template('notAuthorized.html', catalogs=catalogs)
+#     item = (Item.query.filter_by(user_id=login_session['user_id'])
+#                                .filter_by(name=item_name)
+#                                .first()
+#                                )
+#     if login_session['user_id'] != item.user_id:
+#         flash('''You are not authorized to update the movies list,
+#               Please login first!''' )
+#         return render_template('notAuthorized.html', catalogs=catalogs)
 #
-# @socketio.on('incoming-msg')
-# def on_message(data):
-#     """Broadcast messages"""
-#
-#     msg = data["msg"]
-#     username = data["username"]
-#     room = data["room"]
-#     # Set timestamp
-#     time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime())
-#     send({"username": username, "msg": msg, "time_stamp": time_stamp}, room=room)
-#
-#
-# @socketio.on('join')
-# def on_join(data):
-#     """User joins a room"""
-#
-#     username = data["username"]
-#     room = data["room"]
-#     join_room(room)
-#
-#     # Broadcast that new user has joined
-#     send({"msg": username + " has joined the " + room + " room."}, room=room)
-#
-#
-# @socketio.on('leave')
-# def on_leave(data):
-#     """User leaves a room"""
-#
-#     username = data['username']
-#     room = data['room']
-#     leave_room(room)
-#     send({"msg": username + " has left the room"}, room=room)
+#     if request.method == 'POST':
+#         d.session.delete(item)
+#         d.session.commit()
+#         db.session.remove()
+#         flash("Movie has been deleted!")
+#         return redirect(url_for('showItem', catalog_name=catalog_name))
+#     else:
+#         return render_template('deleteItem.html',
+#                                item_name=item_name, catalog_name=catalog_name,
+#                                item=item)
 
 if __name__ == "__main__":
     app.run(debug=True)
