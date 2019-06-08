@@ -25,6 +25,13 @@ db = SQLAlchemy(app)
 login = LoginManager(app)
 login.init_app(app)
 
+# manage a database connection
+# To avaid time errors
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()
+    d.session.remove()
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -52,6 +59,7 @@ def index():
         user = User(username=username, hashed_pswd=hashed_pswd)
         db.session.add(user)
         db.session.commit()
+        db.session.remove()
 
         flash('Registered successfully. Please login.', 'success')
         return redirect(url_for('login'))
@@ -70,6 +78,7 @@ def login():
         login_user(user_object)
         # return redirect(url_for('chat'))
         login_session['user_id'] = user_object.id
+        db.session.remove()
         return redirect(url_for('showCatalog'))
 
 
@@ -177,6 +186,7 @@ def showItemInfo(catalog_name, item_name):
     catalogs = Catalog.query.all()
     items = Item.query.filter_by(name=item_name).first()
     catalog = Catalog.query.filter_by(id=items.catalog_id).first()
+    db.session.remove()
     # Check if info found
     # then, get trailer and overview
     if movie:
@@ -199,6 +209,7 @@ def newItem(catalog_name):
         # catalogs = session.query(Catalog).all()
         catalogs = Catalog.query.all()
         flash("You are not loggged in!" )
+        db.session.remove()
         return render_template('notAuthorized.html', catalogs=catalogs)
     # catalog_id = session.query(Catalog).filter_by(name=catalog_name).first().id
     catalog_id = Catalog.query.filter_by(name=catalog_name).first().id
@@ -216,6 +227,7 @@ def newItem(catalog_name):
 
             db.session.add(newItem)
             db.session.commit()
+            db.session.remove()
             flash("New Movie added!")
             return redirect(url_for('showItem', catalog_name=catalog_name))
         # Notify the user
@@ -233,6 +245,7 @@ def editItem(catalog_name, item_name):
     catalogs = Catalog.query.all()
     if not current_user.is_authenticated:
         flash("You are not loggged in!" )
+        db.session.remove()
         return render_template('notAuthorized.html', catalogs=catalogs)
 
     editedItem = (Item.query.filter_by(user_id=login_session['user_id'])
@@ -251,6 +264,7 @@ def editItem(catalog_name, item_name):
             # db.session.add(editedItem)
             db.session.merge(editedItem)
             db.session.commit()
+            db.session.remove()
 
         # if genre changed, update the movie type in DB
         if request.form['genre'] != 'Choose...':
@@ -264,6 +278,7 @@ def editItem(catalog_name, item_name):
             editedItem.catalog_id = catalog_id
             db.session.merge(editedItem)
             db.session.commit()
+            db.session.remove()
 
         # db.session.add(editedItem)
         # db.session.commit()
@@ -295,6 +310,7 @@ def deleteItem(catalog_name, item_name):
     if request.method == 'POST':
         d.session.delete(item)
         d.session.commit()
+        db.session.remove()
         flash("Movie has been deleted!")
         return redirect(url_for('showItem', catalog_name=catalog_name))
     else:
