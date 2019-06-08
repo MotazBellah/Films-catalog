@@ -3,7 +3,6 @@ import time
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, logout_user
-from flask_socketio import SocketIO, join_room, leave_room, send
 from flask import session as login_session
 from search_movie import search_movie
 from wtform_fields import *
@@ -30,10 +29,10 @@ login.init_app(app)
 def load_user(id):
     return User.query.get(int(id))
 
-socketio = SocketIO(app, manage_session=False)
-
-# Predefined rooms for chat
-ROOMS = ["lounge", "news", "games", "coding"]
+# socketio = SocketIO(app, manage_session=False)
+#
+# # Predefined rooms for chat
+# ROOMS = ["lounge", "news", "games", "coding"]
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -83,17 +82,17 @@ def logout():
     logout_user()
     # del login_session['user_id']
     flash('You have logged out successfully', 'success')
-    return redirect(url_for('login'))
+    return redirect(url_for('showCatalog'))
 
 
-@app.route("/chat", methods=['GET', 'POST'])
-def chat():
-
-    if not current_user.is_authenticated:
-        flash('Please login', 'danger')
-        return redirect(url_for('login'))
-
-    return render_template("chat.html", username=current_user.username, rooms=ROOMS)
+# @app.route("/chat", methods=['GET', 'POST'])
+# def chat():
+#
+#     if not current_user.is_authenticated:
+#         flash('Please login', 'danger')
+#         return redirect(url_for('login'))
+#
+#     return render_template("chat.html", username=current_user.username, rooms=ROOMS)
 
 
 @app.errorhandler(404)
