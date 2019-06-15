@@ -1,11 +1,11 @@
 ## The Movie website:
 
 This site provides a list of items within a variety of movie genres as well as provide a user registration and authentication system. Registered users will have the ability to post, edit and delete their own movies.
-This website is fully responsive as well, so user can access it from any device with small screen or large one. 
+This website is fully responsive as well, so user can access it from any device with small screen or large one.
 
 ## Code style:
 
-This project is written in python 2 and follow PEP-8 Guidelines.
+This project is written in python 3 and follow PEP-8 Guidelines.
 
 ## Getting Started:
 
