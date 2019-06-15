@@ -36,11 +36,6 @@ def shutdown_session(exception=None):
 def load_user(id):
     return User.query.get(int(id))
 
-# socketio = SocketIO(app, manage_session=False)
-#
-# # Predefined rooms for chat
-# ROOMS = ["lounge", "news", "games", "coding"]
-
 
 @app.route("/register", methods=['GET', 'POST'])
 def index():
@@ -92,16 +87,6 @@ def logout():
     # del login_session['user_id']
     flash('You have logged out successfully', 'success')
     return redirect(url_for('showCatalog'))
-
-
-# @app.route("/chat", methods=['GET', 'POST'])
-# def chat():
-#
-#     if not current_user.is_authenticated:
-#         flash('Please login', 'danger')
-#         return redirect(url_for('login'))
-#
-#     return render_template("chat.html", username=current_user.username, rooms=ROOMS)
 
 
 @app.errorhandler(404)
@@ -159,10 +144,6 @@ def showItem(catalog_name):
     # To avoid errors check if thier items found
     # get the movie info and create a list of poster
     # pass this poster list to template to display it
-    # items = (Item.query
-    #         .filter_by(catalog_id=catalog.id)
-    #         .all()
-    #              )
     if items:
         for item in items:
             movie = getMovieInf(item.name)
@@ -302,34 +283,6 @@ def editTask():
         d.session.commit()
         return jsonify({'result': 'success'})
 
-
-# @app.route('/catalogs/<catalog_name>/<item_name>/delete',
-#            methods=['GET', 'POST'])
-# def deleteItem(catalog_name, item_name):
-#     # catalogs = session.query(Catalog).all()
-#     catalogs = Catalog.query.all()
-#     if not current_user.is_authenticated:
-#         flash("You are not loggged in!" )
-#         return render_template('notAuthorized.html', catalogs=catalogs)
-#     item = (Item.query.filter_by(user_id=login_session['user_id'])
-#                                .filter_by(name=item_name)
-#                                .first()
-#                                )
-#     if login_session['user_id'] != item.user_id:
-#         flash('''You are not authorized to update the movies list,
-#               Please login first!''' )
-#         return render_template('notAuthorized.html', catalogs=catalogs)
-#
-#     if request.method == 'POST':
-#         d.session.delete(item)
-#         d.session.commit()
-#         db.session.remove()
-#         flash("Movie has been deleted!")
-#         return redirect(url_for('showItem', catalog_name=catalog_name))
-#     else:
-#         return render_template('deleteItem.html',
-#                                item_name=item_name, catalog_name=catalog_name,
-#                                item=item)
 
 if __name__ == "__main__":
     app.run(debug=True)

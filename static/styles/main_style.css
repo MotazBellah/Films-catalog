@@ -7,19 +7,6 @@ h1 {
     width: 100%;
 }
 
-.jumbotron {
-    marin-bottom: 0;
-    padding-top: 1em;
-    padding-bottom: 1em;
-}
-
-#image-section {
-    min-width: 30%;
-    max-width: 30%;
-    margin-right: 2em;
-    padding: 0 0 0 2em;
-    float: left;
-}
 
 img {
     float: left;
@@ -27,16 +14,6 @@ img {
     max-height: 480px;
 }
 
-.card {
-  /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  transition: 0.3s;
-}
-
-/* On mouse-over, add a deeper shadow */
-.card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
 
 #righthand-side {
     margin: auto;
@@ -54,7 +31,7 @@ h2 {
 }
 
 @media (max-width: 588px) {
-    picture {
+    .buttons {
         display: none;
     }
     #righthand-side {

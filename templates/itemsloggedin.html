@@ -32,7 +32,7 @@
                      </li>
                    </ul>
               </div>
-             <a class="btn btn-outline-light" href="{{url_for('logout')}}"> Logout</a>
+             <a class="btn btn-outline-light" href="{{url_for('logout')}}"> Log Out </a>
             </nav>
 
             {% with messages = get_flashed_messages() %}
@@ -75,7 +75,7 @@
                         console.log(hre);
                         console.log(name);
                         // console.log('/catalogs/{{catalog_name}}/movies');
-                        if (confirm("Did you want to delete "+ name +" movie?")){
+                        if (confirm("Do you want to delete "+ name +" movie?")){
                             $.ajax({
                                 url: '/delete?name='+name,
                                 type: 'POST',
