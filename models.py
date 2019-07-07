@@ -7,7 +7,7 @@ db = SQLAlchemy()
 class User(UserMixin, db.Model):
     """ User model """
 
-    __tablename__ = "users"
+    __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True, nullable=False)
     hashed_pswd = db.Column(db.String(), nullable=False)
@@ -36,7 +36,7 @@ class Item(db.Model):
     type = db.Column(db.String(250))
     catalog_id = db.Column(db.Integer, db.ForeignKey('catalog.id'))
     catalog = db.relationship(Catalog)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship(User)
 
     # To use JSON
